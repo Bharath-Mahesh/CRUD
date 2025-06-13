@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher List</title>
+    <link rel="stylesheet" href="main.css">
+    <style>
+        .table-container {
+            padding: 2rem;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            table-layout: fixed; 
+        }
+
+        th,td {
+            padding: 1.5rem;
+            text-align: center;
+            font-size: 1.3rem;
+            text-overflow: wrap,ellipsis;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            overflow: ellipsis; 
+            vertical-align: middle;
+            width: 16.666%; 
+        }
+
+        .name {
+            min-width: 100px;
+        }
+
+        td {
+            color: rgb(255, 255, 255);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        th {
+            color: rgb(255, 255, 255);
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        tr:hover {
+            background: rgba(0, 0, 0, 0.05);
+            transition: background 0.3s ease;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            background: #17930c;
+            color: white;
+            border: 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+            align-items: center;
+            display: inline-block;
+            justify-content: center;
+        }
+
+        .edit {
+            background: #b0b319;
+            margin-bottom: 10px;
+        }
+
+        .delete {
+            background: #bf1212;
+        }
+
+        .edit:hover {
+            transform: translateY(-2px);
+            background: #c6d40e;
+        }
+
+        .delete:hover {
+            transform: translateY(-2px);
+            background: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">TEACHER LIST</h1>
+        <div class="table-container">
+            <table id="teacherTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th class="name">First Name</th>
+                        <th class="name">Last Name</th>
+                        <th>DOB</th>
+                        <th>Speaciality</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="teacherTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('http://localhost:8000/teachers/', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const tableBody = document.getElementById('teacherTableBody');
+                data.forEach(teacher => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${teacher.id}</td>
+                        <td class="name">${teacher.first_name}</td>
+                        <td class="name">${teacher.last_name}</td>
+                        <td>${new Date(teacher.DOB).toLocaleDateString()}</td>
+                        <td>${teacher.speaciality}</td>
+                        <td>
+                            <button class="edit" onclick="editTeacher(${teacher.id})">Edit</button>
+                            <button class="delete" onclick="deleteTeacher(${teacher.id})">Delete</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching teacher data:', error);
+                document.getElementById('teacherTableBody').innerHTML = `
+                    <tr><td colspan="6">Error loading teachers: ${error.message}</td></tr>
+                `;
+            });
+        });
+
+        function editTeacher(teacherId) {
+            // Implement your edit logic here
+            console.log('Edit teacher with ID:', teacherId);
+            // For example, redirect to an edit page:
+            window.location.href = `teacher_edit.html?id=${teacherId}`;
+        }
+
+        function deleteTeacher(teacherId) {
+            console.log('Delete teacher with ID:', teacherId);
+            fetch(`http://localhost:8000/teachers/${teacherId}`, {
+                method: 'DELETE',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                // Reload the teacher list after successful deletion
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error deleting teacher:', error);
+                alert('Failed to delete teacher: ' + error.message);
+            });
+        }
+    </script>
+
+</body>
+</html>

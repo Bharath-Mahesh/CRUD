@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Edit Student</title>
+        <link rel="stylesheet" href="main.css">
+        
+        
+        <style>
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-width: 800px;
+            min-height: 500px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            border-radius: 10px;
+            height:100%;
+            width: 100%;
+
+            gap: 1rem;
+        }
+
+        input {
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 12px;
+            background: #b0b319;;
+            color: white;
+            border: whitesmoke;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            background: #c6d40e;;
+        }
+
+        h1 {
+            color: #f4f2f2;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>EDIT STUDENT</h1>
+
+            <form id="editStudentForm">
+                <input type="text" id="first_name" name="first_name" placeholder="Enter New First Name" required>
+                <input type="text" id="last_name" name="last_name" placeholder="Enter New Last Name" required>
+                <input type="text" 
+                       id="DOB"
+                       name="DOB"
+                       placeholder="Enter New DOB"
+                       onfocus="this.type='date'; this.showPicker()"
+                       onblur="if(!this.value) this.type='text'"
+                       required>
+                <input type="number" 
+                       id="grade"
+                       name="grade" 
+                       placeholder="Enter New Grade (1-12)" 
+                       min="1" 
+                       max="12" 
+                       required>
+                <button type="submit">Update Student</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const studentId = urlParams.get('id');
+    const form = document.getElementById('editStudentForm');
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch(`http://localhost:8000/students/${studentId}`);
+            if (!response.ok) throw new Error('Failed to fetch student data');
+            const student = await response.json();
+            document.getElementById('first_name').value = student.first_name;
+            document.getElementById('last_name').value = student.last_name;
+            const dobInput = document.getElementById('DOB');
+            dobInput.value = student.DOB;
+            document.getElementById('grade').value = student.grade;
+            // Set input type to date if value exists, else text
+            if (dobInput.value) {
+                dobInput.type = 'date';
+            } else {
+                dobInput.type = 'text';
+            }
+        } catch (error) {
+            console.error('Error loading student:', error);
+            alert('Failed to load student data: ' + error.message);
+        }
+    });
+
+    // DOB input: handle placeholder and type switching
+    const dobInput = document.getElementById('DOB');
+    dobInput.addEventListener('focus', function() {
+        this.type = 'date';
+        this.showPicker && this.showPicker();
+    });
+    dobInput.addEventListener('blur', function() {
+        if (!this.value) this.type = 'text';
+    });
+
+    form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const data = {
+            first_name: document.getElementById('first_name').value,
+            last_name: document.getElementById('last_name').value,
+            DOB: document.getElementById('DOB').value,
+            grade: parseInt(document.getElementById('grade').value)
+        };
+
+        try {
+            const response = await fetch(`http://localhost:8000/students/${studentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || 'Failed to update student');
+            }
+
+            alert('Student updated successfully!');
+            window.location.href = 'student_list.html';
+        } catch (error) {
+            alert('Failed to update student: ' + error.message);
+        }
+    });
+</script>
+</body>
+</html>

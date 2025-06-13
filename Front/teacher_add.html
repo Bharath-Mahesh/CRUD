@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Teacher</title>
+    <link rel="stylesheet" href="main.css">
+    <style>
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-width: 800px;
+            min-height: 500px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            border-radius: 10px;
+            height:100%;
+            width: 100%;
+
+            gap: 1rem;
+        }
+
+        input {
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 12px;
+            background: #2f7029;
+            color: white;
+            border: whitesmoke;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            background: #30a626;
+        }
+
+        h1 {
+            color: #f4f2f2;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h1>ADD TEACHER</h1>
+            <form action="/create" method="POST">
+                <input type="text" name="first_name" placeholder="Enter First Name" required>
+                <input type="text" name="last_name" placeholder="Enter Last Name" required>
+                <input type="date" 
+                       name="dob" 
+                       placeholder="Enter DOB"
+                       onfocus="(this.type='date')"
+                       onblur="if(!this.value)this.type='text'"
+                       required>
+                <input type="text" 
+                       name="speaciality" 
+                       placeholder="Enter Speaciality" 
+                       required>
+                <button type="submit">Create Teacher</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+<script>
+document.querySelector('form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+
+    const dob = formData.get('dob');
+    const data = {
+        first_name: formData.get('first_name'),
+        last_name: formData.get('last_name'),
+        DOB: dob,
+        speaciality: formData.get('speaciality')
+    };
+
+    try {
+        const response = await fetch('http://localhost:8000/teachers/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || JSON.stringify(errorData) || 'Failed to add teacher');
+        }
+
+        alert('Teacher added successfully!');
+    } catch (error) {
+        alert('Failed to add teacher: ' + (error.message || JSON.stringify(error)));
+    }
+});
+</script>
+</html>
+

@@ -99,7 +99,7 @@
     
     document.addEventListener('DOMContentLoaded', async () => {
         try {
-            const response = await fetch(`http://localhost:8000/students/${studentId}`);
+            const response = await fetch(`http://65.0.214.158:8000/students/${studentId}`);
             if (!response.ok) throw new Error('Failed to fetch student data');
             const student = await response.json();
             document.getElementById('first_name').value = student.first_name;
@@ -140,7 +140,7 @@
         };
 
         try {
-            const response = await fetch(`http://localhost:8000/students/${studentId}`, {
+            const response = await fetch(`http://65.0.214.158:8000/students/${studentId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

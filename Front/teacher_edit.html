@@ -93,7 +93,7 @@
 
         async function fetchTeacherData() {
             try {
-                const response = await fetch(`http://localhost:8000/teachers/${teacherId}`);
+                const response = await fetch(`http://65.0.214.158:8000/teachers/${teacherId}`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch teacher data');
                 }
@@ -122,7 +122,7 @@
             };
 
             try {
-                const response = await fetch(`http://localhost:8000/teachers/${teacherId}`, {
+                const response = await fetch(`http://65.0.214.158:8000/teachers/${teacherId}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'

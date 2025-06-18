@@ -113,7 +113,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('http://localhost:8000/teachers/', {
+            fetch('http://65.0.214.158:8000/teachers/', {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -161,7 +161,7 @@
 
         function deleteTeacher(teacherId) {
             console.log('Delete teacher with ID:', teacherId);
-            fetch(`http://localhost:8000/teachers/${teacherId}`, {
+            fetch(`http://65.0.214.158:8000/teachers/${teacherId}`, {
                 method: 'DELETE',
             })
             .then(response => {

@@ -113,7 +113,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            fetch('http://65.0.214.158:8000/students/', {  
+            fetch('http://localhost:8000/students/', {  
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -148,7 +148,7 @@
         }
         function deleteStudent(id) {
             if (confirm('Are you sure you want to delete this student?')) {
-                fetch(`http://65.0.214.158:8000/students/${id}/`, {
+                fetch(`http://localhost:8000/students/${id}/`, {
                     method: 'DELETE',
                     headers: {
                         'Accept': 'application/json',

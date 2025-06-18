@@ -100,7 +100,7 @@ document.getElementById('studentForm').addEventListener('submit', async function
     };
 
     try {
-        const response = await fetch('http://65.0.214.158:8000/students/', {
+        const response = await fetch('http://localhost:8000/students/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
